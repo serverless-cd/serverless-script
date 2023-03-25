@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+const { start, generate } = require("../src");
+let args = process.argv.splice(2);
+const core = require("@serverless-devs/core");
+const _ = core.lodash;
+
+if(_.includes(args, 'start')) {
+  start();
+}
+
+if(_.includes(args, 'generate')) {
+  generate();
+}

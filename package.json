@@ -1,0 +1,36 @@
+{
+  "name": "@serverless-cd/serverless-script",
+  "version": "0.0.1-beta-2",
+  "description": "serverless-cd script like stop, start",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "serverless-script": "bin/serverless-script"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serverless-cd/serverless-script.git"
+  },
+  "keywords": [
+    "script",
+    "serverless-cd",
+    "serverless"
+  ],
+  "author": "mamba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serverless-cd/serverless-script/issues"
+  },
+  "homepage": "https://github.com/serverless-cd/serverless-script#readme",
+  "dependencies": {
+    "@serverless-cd/config": "latest",
+    "@serverless-devs/core": "latest",
+    "art-template": "^4.13.2"
+  }
+}
