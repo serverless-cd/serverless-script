@@ -3,6 +3,7 @@ const { lodash: _, help, fse, ParseVariable, getCredential } = require("@serverl
 const { spawnSync } = require('child_process');
 const debug = require('debug')('serverless-cd:script_start');
 const Initialize = require('./initialize');
+const { getAdminRootPath } = require('./util');
 
 class Deploy {
   /**
@@ -18,7 +19,7 @@ class Deploy {
     }
 
     this.yaml = _.get(params, 'yaml', 's.yaml');
-    this.filePath = _.get(params, 'file-path') || _.get(params, 'filePath') || process.cwd();
+    this.filePath = _.get(params, 'file-path') || _.get(params, 'filePath') || getAdminRootPath();
     debug('查找启动 yaml 的地址');
     const yamlPath = path.join(this.filePath, this.yaml);
     debug(`最终需要解析的yaml 地址是: ${yamlPath}`);

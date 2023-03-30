@@ -1,8 +1,9 @@
 const { fs } = require('@serverless-cd/core');
 const path = require('path');
 const { spawnSync } = require('child_process');
-
 const debug = require('debug')('serverless-cd:script_initialize');
+
+const { getPrismaType, getAdminRootPath } = require('./util');
 
 class Initialize {
   /**
@@ -22,7 +23,7 @@ class Initialize {
       return;
     }
     // 获取 prisma 类型
-    const prismaType = this.getPrismaType();
+    const prismaType = getPrismaType();
     debug(`prisma 类型是 ${prismaType}`);
 
     if (prismaType === 'sqlite') {
@@ -41,23 +42,6 @@ class Initialize {
     }
   }
 
-  getPrismaType() {
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL 未配置');
-    }
-    if (databaseUrl.startsWith('file:')) {
-      return 'sqlite';
-    }
-    if (databaseUrl.startsWith('mysql:')) {
-      return 'mysql';
-    }
-    if (databaseUrl.startsWith('mongodb:')) {
-      return 'mongodb';
-    }
-    throw new Error('DATABASE_URL 配置不符合预期或者此数据库还没有支持');
-  }
-
   async testConnection() {
     // 判断数据表是否已经存在
     try {
@@ -73,7 +57,7 @@ class Initialize {
   async sqlite() {
     const databaseUrl = process.env.DATABASE_URL;
     const targetPath = databaseUrl.replace('file:', '');
-    const sourceAddress = path.join(process.cwd(), 'prisma', 'dev.db');
+    const sourceAddress = path.join(getAdminRootPath(), 'prisma', 'dev.db');
     debug(`需要将 sqlite copy 一份到临时目录: 临时缓存文件 ${targetPath} 初始仓库 ${sourceAddress}`);
 
     fs.ensureDirSync(path.dirname(targetPath));
