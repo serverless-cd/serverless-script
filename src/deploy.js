@@ -47,7 +47,7 @@ class Deploy {
     await this.injectionEnv(parsedResult);
 
     debug('初始化数据库相关');
-    const provider = _.get(parsedResult, 'realVariables.vars.prisma', getPrismaType());
+    const provider = getPrismaType();
     debug(`运行的 provider 数据库类型: ${provider}`);
     await this.initialize(provider);
   }
@@ -134,8 +134,10 @@ class Deploy {
     }
 
     const schemaFile = path.join(getAdminRootPath(), 'prisma', 'schema.prisma');
-    if (!fse.existsSync(schemaFile) || this.generate) {
+    if (this.generate || !fse.existsSync(schemaFile)) {
       await generate({ provider });
+    } else {
+      debug('检测存在 schema.prisma 文件，跳过生成 prisma 过程');
     }
 
     spawnSync(`npx prisma generate`, {
