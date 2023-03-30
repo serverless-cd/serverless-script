@@ -1,13 +1,27 @@
 #!/usr/bin/env node
-const { start, generate } = require("../src");
-let args = process.argv.splice(2);
-const core = require("@serverless-devs/core");
-const _ = core.lodash;
 
-if(_.includes(args, 'start')) {
-  start();
+const { lodash: _, help, commandParse } = require("@serverless-devs/core");
+const { Deploy, generate, Start } = require("../src");
+
+const command = _.get(process.argv, '2');
+
+if (!['start', 'deploy', 'generate'].includes(command)) {
+  help(require('../src/help/command'))
+  return;
 }
 
-if(_.includes(args, 'generate')) {
-  generate();
-}
+const comParse = commandParse({ args: _.drop(process.argv, 2) });
+const argsData = _.get(comParse, 'data', {});
+
+(async function() {
+  if (command === 'deploy') {
+    const deploy = new Deploy(argsData);
+    await deploy.run();
+  } else if (command === 'start') {
+    const start = new Start(argsData);
+    await start.start();
+  } else if (command === 'generate') {
+    generate();
+  }
+})()
+
