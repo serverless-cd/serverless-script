@@ -35,7 +35,7 @@ make ${db_type}-start
 4. 将 yaml 配置注入到当前环境
 
 5. 当前环境根据当前环境做一些初始化动作
-    - prisma： **TODO** <根据 prisma 生成文件 src/generate.js>
+    - prisma： 会根据环境变量或者参数生成 prisma 文件
     - sqlite: `file:/mnt/auto/` 转化为 `file:./.tmp/`, 建议不要放在 src/admin/prisma，在线上会有一个 copy 这个文件的动作，可能会导致存在一些问题。启动逻辑：尝试链接数据库，如果链接上则直接使用，如果链接不上则复制 src/admin/prisma/dev.db 到配置目录
     - 抛出一个方法 initialieze，给线上运行的初始钩子调用。**TODO**: 需要 ignore core包
 

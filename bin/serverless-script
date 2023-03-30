@@ -21,7 +21,7 @@ const argsData = _.get(comParse, 'data', {});
     const start = new Start(argsData);
     await start.start();
   } else if (command === 'generate') {
-    await generate();
+    await generate(argsData);
   }
 })()
 

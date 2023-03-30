@@ -1,11 +1,18 @@
 const template = require("art-template");
 const { fs } = require("@serverless-cd/core");
+const { help: showHelp } = require("@serverless-devs/core");
 const path = require("path");
 const debug = require('debug')('serverless-cd:script_generate');
 const { getPrismaType, getAdminRootPath } = require("./util");
 
-async function generate() {
-  const provider = getPrismaType();
+async function generate({ provider, help, h } = {}) {
+  if (help || h) {
+    showHelp(require('./help/generate'));
+    return;
+  }
+  if (!provider) {
+    provider = getPrismaType();
+  }
   const templateYaml = path.join(getAdminRootPath(), 'prisma', 'db.prisma.art');
   debug(`模版文件地址: ${templateYaml}`);
   if (!fs.existsSync(templateYaml)) {
