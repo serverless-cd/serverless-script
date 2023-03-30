@@ -1,6 +1,6 @@
 {
   "name": "@serverless-cd/serverless-script",
-  "version": "0.0.1-beta-3",
+  "version": "0.0.1",
   "description": "serverless-cd script like stop, start",
   "main": "index.js",
   "scripts": {
