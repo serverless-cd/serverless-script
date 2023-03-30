@@ -3,7 +3,8 @@ const { lodash: _, help, fse, ParseVariable, getCredential } = require("@serverl
 const { spawnSync } = require('child_process');
 const debug = require('debug')('serverless-cd:script_start');
 const Initialize = require('./initialize');
-const { getAdminRootPath } = require('./util');
+const generate = require('./generate');
+const { getAdminRootPath, getPrismaType } = require('./util');
 
 class Deploy {
   /**
@@ -18,6 +19,7 @@ class Deploy {
       return;
     }
 
+    this.generate = _.get(params, 'generate', false);
     this.yaml = _.get(params, 'yaml', 's.yaml');
     this.filePath = _.get(params, 'file-path') || _.get(params, 'filePath') || getAdminRootPath();
     debug('查找启动 yaml 的地址');
@@ -45,9 +47,9 @@ class Deploy {
     await this.injectionEnv(parsedResult);
 
     debug('初始化数据库相关');
-    const prisma = _.get(parsedResult, 'realVariables.vars.prisma', '');
-    debug(`运行的 prisma 数据库类型: ${prisma}`);
-    await this.initialize(prisma);
+    const provider = _.get(parsedResult, 'realVariables.vars.prisma', getPrismaType());
+    debug(`运行的 provider 数据库类型: ${provider}`);
+    await this.initialize(provider);
   }
 
   // 解析 yaml
@@ -97,17 +99,17 @@ class Deploy {
   }
 
   // 初始化数据库相关
-  async initialize(prisma) {
+  async initialize(provider) {
     const { DATABASE_URL: databaseUrl = '' } = process.env;
     if (_.isEmpty(databaseUrl) || _.startsWith(databaseUrl, '${')) {
-      throw new Error(`请先设置环境变量 DATABASE_URL 用于链接 ${prisma} 数据库`);
+      throw new Error(`请先设置环境变量 DATABASE_URL 用于链接 ${provider} 数据库`);
     }
-    if (_.isEmpty(prisma)) {
+    if (_.isEmpty(provider)) {
       console.warn('没有检测到 prisma 配置，跳过初始化');
       return;
     }
 
-    if (prisma === 'sqlite') {
+    if (provider === 'sqlite') {
       if (!_.startsWith(databaseUrl, 'file:')) {
         throw new Error(`sqlite 启动 DATABASE_URL 需要 file: 开头`);
       }
@@ -118,21 +120,25 @@ class Deploy {
         process.env.DATABASE_URL = `file:${filePath}`;
       }
       console.info('sqlite 的 DATABASE_URL 配置最终为: ' + process.env.DATABASE_URL);
-    } else if (prisma === 'mysql') {
+    } else if (provider === 'mysql') {
       if (!_.startsWith(databaseUrl, 'mysql:')) {
         throw new Error('mysql 启动 DATABASE_URL 需要 mysql: 开头');
       }
-    } else if (prisma === 'mongodb') {
+    } else if (provider === 'mongodb') {
       if (!_.startsWith(databaseUrl, 'mongodb:')) {
         throw new Error('mongodb 启动 DATABASE_URL 需要 mongodb: 开头');
       }
     } else {
-      console.error(`启动暂未支持${prisma}数据库，启动可能失败`);
+      console.error(`启动暂未支持${provider}数据库，启动可能失败`);
       return;
     }
 
-    // TODO: 后续需要使用 schema.prisma，而 schema.prisma 需要自动生成
-    spawnSync(`npx prisma generate --schema=./prisma/${prisma}.prisma`, {
+    const schemaFile = path.join(getAdminRootPath(), 'prisma', 'schema.prisma');
+    if (!fse.existsSync(schemaFile) || this.generate) {
+      await generate({ provider });
+    }
+
+    spawnSync(`npx prisma generate`, {
       encoding: 'utf8',
       shell: true,
       stdio: 'inherit',

@@ -8,14 +8,14 @@ const { getPrismaType, getAdminRootPath } = require('./util');
 class Initialize {
   /**
    * 
-   * @param {PrismaClient} prisma 
+   * @param {PrismaClient} prismaClient 
    */
-  constructor(prisma) {
-    if (!prisma) {
+  constructor(prismaClient) {
+    if (!prismaClient) {
       const { PrismaClient } = require('@prisma/client');
-      prisma = new PrismaClient();
+      prismaClient = new PrismaClient();
     }
-    this.prisma = prisma;
+    this.prisma = prismaClient;
   }
   async init() {
     // 链接成功，直接跳出
@@ -23,14 +23,14 @@ class Initialize {
       return;
     }
     // 获取 prisma 类型
-    const prismaType = getPrismaType();
-    debug(`prisma 类型是 ${prismaType}`);
+    const provider = getPrismaType();
+    debug(`provider 类型是 ${provider}`);
 
-    if (prismaType === 'sqlite') {
+    if (provider === 'sqlite') {
       await this.sqlite();
-    } else if (prismaType === 'mysql') {
+    } else if (provider === 'mysql') {
       await this.mysql();
-    } else if (prismaType === 'mongodb') {
+    } else if (provider === 'mongodb') {
       await this.mongodb();
     }
 
@@ -73,8 +73,7 @@ class Initialize {
 
   async mysql() {
     try {
-      // TODO: 后面不需要再加 schema 参数了
-      spawnSync(`npx prisma migrate dev --name init --schema=./prisma/mysql.prisma`, {
+      spawnSync(`npx prisma migrate dev --name init`, {
         encoding: 'utf8',
         stdio: 'inherit',
         shell: true,

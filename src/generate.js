@@ -13,16 +13,16 @@ async function generate({ provider, help, h } = {}) {
   if (!provider) {
     provider = getPrismaType();
   }
-  const templateYaml = path.join(getAdminRootPath(), 'prisma', 'db.prisma.art');
-  debug(`模版文件地址: ${templateYaml}`);
-  if (!fs.existsSync(templateYaml)) {
-    throw new Error(`模版文件不存在: ${templateYaml}`);
+  const templateFile = path.join(getAdminRootPath(), 'prisma', 'db.prisma.art');
+  debug(`模版文件地址: ${templateFile}`);
+  if (!fs.existsSync(templateFile)) {
+    throw new Error(`模版文件不存在: ${templateFile}`);
   }
 
-  const payload = template(templateYaml, { provider });
-  const targetYaml = path.join(getAdminRootPath(), 'prisma', 'schema.prisma');
-  debug(`输出prisma文件地址: ${targetYaml}`);
-  fs.outputFileSync(targetYaml, payload);
+  const payload = template(templateFile, { provider });
+  const targetFile = path.join(getAdminRootPath(), 'prisma', 'schema.prisma');
+  debug(`输出prisma文件地址: ${targetFile}`);
+  fs.outputFileSync(targetFile, payload);
 }
 
 module.exports = generate;
