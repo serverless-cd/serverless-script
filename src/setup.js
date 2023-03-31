@@ -6,7 +6,7 @@ const Initialize = require('./initialize');
 const generate = require('./generate');
 const { getAdminRootPath, getPrismaType } = require('./util');
 
-class Deploy {
+class Setup {
   /**
    * 启动项目
    * @param {{ yaml: String; help: Boolean; 'file-path'?: String }} params 
@@ -150,4 +150,4 @@ class Deploy {
   }
 }
 
-module.exports = Deploy;
+module.exports = Setup;

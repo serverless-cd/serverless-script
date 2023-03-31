@@ -1,6 +1,6 @@
 module.exports = [
   {
-    header: 'deploy',
+    header: 'setup',
     content: '部署前初始化',
   },
   {

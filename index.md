@@ -19,7 +19,7 @@ make start
 ## 执行命令会做什么动作
 
 
-### 部署准备(deploy)
+### 部署准备(setup)
 
 1. 注入 .env 文件的环境变量，依赖 @serverless-cd/config 包
 

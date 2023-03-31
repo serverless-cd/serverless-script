@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 const { lodash: _, help, commandParse } = require("@serverless-devs/core");
-const { Deploy, generate, Start } = require("../src");
+const { Setup, generate, Start } = require("../src");
 
 const command = _.get(process.argv, '2');
 
-if (!['start', 'deploy', 'generate'].includes(command)) {
+if (!['start', 'setup', 'generate'].includes(command)) {
   help(require('../src/help/command'))
   return;
 }
@@ -14,9 +14,9 @@ const comParse = commandParse({ args: _.drop(process.argv, 2) });
 const argsData = _.get(comParse, 'data', {});
 
 (async function() {
-  if (command === 'deploy') {
-    const deploy = new Deploy(argsData);
-    await deploy.run();
+  if (command === 'setup') {
+    const setup = new Setup(argsData);
+    await setup.run();
   } else if (command === 'start') {
     const start = new Start(argsData);
     await start.start();
