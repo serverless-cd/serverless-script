@@ -44,3 +44,5 @@ make start
 ### 根据模版生成文件(generate)
 
 根据参数或者环境变量生成 prisma 文件
+
+比如需要切换数据库运行项目，就可以设置好链接数据库的环境变量，然后运行 `npx serverless-script generate` 就可以生成对映的 `schema.prisma` 文件
