@@ -1,8 +1,12 @@
-const start = require('./local-start');
+require('@serverless-cd/config'); // 注入.env文件配置到当前环境
+const Setup = require('./setup');
+const Start = require('./start');
 const generate = require('./generate');
-
+const Initialize = require('./initialize');
 
 module.exports = {
-  start,
+  Setup,
+  Start,
+  Initialize,
   generate,
 };

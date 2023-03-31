@@ -1,8 +1,8 @@
 {
   "name": "@serverless-cd/serverless-script",
-  "version": "0.0.1-beta-2",
+  "version": "0.0.3",
   "description": "serverless-cd script like stop, start",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,8 +29,16 @@
   },
   "homepage": "https://github.com/serverless-cd/serverless-script#readme",
   "dependencies": {
-    "@serverless-cd/config": "latest",
     "@serverless-devs/core": "latest",
-    "art-template": "^4.13.2"
+    "art-template": "^4.13.2",
+    "debug": "^4.3.4"
+  },
+  "devDependencies": {
+    "@serverless-cd/config": "latest",
+    "@serverless-cd/core": "latest"
+  },
+  "peerDependencies": {
+    "@serverless-cd/config": "latest",
+    "@serverless-cd/core": "latest"
   }
 }
